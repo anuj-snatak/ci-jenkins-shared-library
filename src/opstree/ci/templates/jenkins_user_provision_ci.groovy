@@ -2,7 +2,6 @@ package opstree.ci.templates
 
 import opstree.common.python_env
 import opstree.common.script_loader
-import opstree.notification.slack_notify
 
 class jenkins_user_provision_ci implements Serializable {
 
@@ -16,12 +15,12 @@ class jenkins_user_provision_ci implements Serializable {
 
     void execute() {
 
-        // Checkout job repository
+        // Checkout repository
         steps.stage('Checkout') {
             steps.checkout steps.scm
         }
 
-        // Load Python script from shared library resources
+        // Load Python script from shared library
         steps.stage('Load Script') {
             new script_loader(steps)
                 .load("python/provision_jenkins_users.py",
@@ -60,10 +59,9 @@ class jenkins_user_provision_ci implements Serializable {
             }
         }
 
-        // Success notification
-        steps.stage('Success Notification') {
-            new slack_notify(steps)
-                .send("Jenkins User Provisioning SUCCESS", "good")
+        // Final success message
+        steps.stage('Completed') {
+            steps.echo "Jenkins User Provisioning completed successfully."
         }
     }
 }
