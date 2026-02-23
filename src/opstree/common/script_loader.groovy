@@ -1,19 +1,15 @@
 package opstree.common
 
-class python_env implements Serializable {
+class script_loader implements Serializable {
 
     def steps
 
-    python_env(steps) {
+    script_loader(steps) {
         this.steps = steps
     }
 
-    void setup() {
-        steps.sh '''
-            python3 -m venv venv
-            . venv/bin/activate
-            python -m pip install --upgrade pip
-            pip install requests urllib3
-        '''
+    void load(String resourcePath, String outputFile) {
+        steps.writeFile file: outputFile,
+            text: steps.libraryResource(resourcePath)
     }
 }
